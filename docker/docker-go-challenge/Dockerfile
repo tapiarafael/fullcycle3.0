@@ -2,10 +2,9 @@ FROM golang:1.17 AS build
 
 WORKDIR /usr/src/app
 COPY ./main.go .
-RUN go build main.go
+RUN go build -ldflags "-s -w" main.go
 
-# FROM alpine:latest
-FROM gcr.io/distroless/static-debian12
+FROM scratch
 
 COPY --from=build /usr/src/app .
 
