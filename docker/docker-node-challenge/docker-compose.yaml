@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile.node
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
     command: node index.js
+    volumes:
+      - ./src:/usr/src/app
     networks:
       - node-challenge
     tty: true
