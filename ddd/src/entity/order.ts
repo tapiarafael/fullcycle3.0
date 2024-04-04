@@ -9,9 +9,24 @@ export class Order {
     this._id = id;
     this._customerId = customerId;
     this._items = items;
+    this.validate();
   }
 
-  public total(): number {
-    return this._items.reduce((total, item) => total + item.total(), 0);
+  private validate(): void {
+    if (!this._id) {
+      throw new Error('ID is required');
+    }
+
+    if (!this._customerId) {
+      throw new Error('CustomerId is required');
+    }
+
+    if (!this._items || this._items.length === 0) {
+      throw new Error('At least one item is required');
+    }
+  }
+
+  get total(): number {
+    return this._items.reduce((total, item) => total + item.total, 0);
   }
 }

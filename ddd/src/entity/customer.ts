@@ -40,4 +40,12 @@ export class Customer {
     this._address = address;
   }
 
+  get name(): string {
+    return this._name;
+  }
+
+  get isActive(): boolean {
+    return this._active;
+  }
+
 }
