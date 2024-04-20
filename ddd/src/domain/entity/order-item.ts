@@ -14,4 +14,18 @@ export class OrderItem {
   get total(): number {
     return this._quantity * this._price;
   }
+
+  get id(): string {
+    return this._id;
+  }
+  get productId(): string {
+    return this._productId;
+  }
+  get price(): number {
+    return this._price;
+  }
+  get quantity(): number {
+    return this._quantity;
+  }
+  
 }
