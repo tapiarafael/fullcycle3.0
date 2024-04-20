@@ -32,5 +32,20 @@ export class Address {
     return `${this._street} ${this._number}, ${this._zip} ${this._city}`;
   }
 
+  public get street(): string {
+    return this._street;
+  }
+
+  public get number(): string {
+    return this._number;
+  }
+
+  public get zip(): string {
+    return this._zip;
+  }
+
+  public get city(): string {
+    return this._city;
+  }
 
 }

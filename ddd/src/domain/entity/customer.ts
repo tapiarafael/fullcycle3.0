@@ -37,6 +37,10 @@ export class Customer {
     this._active = false;
   }
 
+  get address(): Address {
+    return this._address;
+  }
+
   set address(address: Address) {
     this._address = address;
   }
