@@ -26,6 +26,10 @@ export class Order {
     }
   }
 
+  changeCustomer(customerId: string): void {
+    this._customerId = customerId;
+  }
+
   get total(): number {
     return this._items.reduce((total, item) => total + item.total, 0);
   }
