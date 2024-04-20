@@ -36,27 +36,41 @@ describe("Order repository test", () => {
     await sequelize.close();
   });
 
-  it("should create a new order", async () => {
+  async function createProduct(): Promise<Product> {
+    const productRepository = new ProductRepository();
+    const product = new Product("123", "Product 1", 10);
+
+    await productRepository.create(product);
+
+    return product;
+  }
+
+  async function createCustomer(): Promise<Customer> {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", "1", "Zipcode 1", "City 1");
     customer.address = address;
+    customer.activate();
+
     await customerRepository.create(customer);
 
-    const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10);
-    await productRepository.create(product);
+    return customer;
+  }
 
-    const orderItem = new OrderItem(
-      "1",
-      product.id,
-      product.price,
-      2
-    );
+  function createOrderItem(productId: string): OrderItem {
+    return new OrderItem(Date.now().toString(), productId, 10, 1)
+  }
 
-    const order = new Order("123", "123", [orderItem]);
-
+  it("should create an order", async () => {
     const orderRepository = new OrderRepository();
+
+    const customer = await createCustomer();
+    const product = await createProduct();
+
+    const orderItem = createOrderItem(product.id)
+    const orderItems = [orderItem]
+    const order = new Order("1", customer.id, orderItems);
+
     await orderRepository.create(order);
 
     const orderModel = await OrderModel.findOne({
@@ -65,18 +79,19 @@ describe("Order repository test", () => {
     });
 
     expect(orderModel.toJSON()).toStrictEqual({
-      id: "123",
-      customer_id: "123",
+      id: "1",
+      customer_id: customer.id,
       total: order.total,
       items: [
         {
           id: orderItem.id,
           price: orderItem.price,
           quantity: orderItem.quantity,
-          order_id: "123",
-          product_id: "123",
+          product_id: orderItem.productId,
+          order_id: "1",
         },
       ],
     });
   });
+
 });
