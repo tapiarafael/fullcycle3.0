@@ -132,6 +132,43 @@ describe("Order repository test", () => {
     });
   });
 
+  it("should be able to update item quantity from an order", async () => {
+    const orderRepository = new OrderRepository();
+
+    const customer = await createCustomer();
+    const product = await createProduct();
+
+    const orderItem = createOrderItem(product.id)
+    const orderItems = [orderItem]
+    const order = new Order("1", customer.id, orderItems);
+    
+    await orderRepository.create(order);
+
+    orderItem.changeQuantity(5);
+
+    await orderRepository.update(order);
+
+    const orderModel = await OrderModel.findOne({
+      where: { id: order.id },
+      include: ["items"],
+    });
+
+    expect(orderModel.toJSON()).toStrictEqual({
+      id: "1",
+      customer_id: customer.id,
+      total: order.total,
+      items: [
+        {
+          id: orderItem.id,
+          price: orderItem.price,
+          quantity: orderItem.quantity,
+          product_id: orderItem.productId,
+          order_id: "1",
+        },
+      ],
+    });
+  });
+
   it("should find an order by id", async () => {
     const orderRepository = new OrderRepository();
 

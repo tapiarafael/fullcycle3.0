@@ -19,17 +19,26 @@ export class OrderRepository implements IOrderRepository {
     }, { include: [{model: OrderItemModel}] })
   }
 
-  async update({id, total, items, customerId}: Order): Promise<void> {
-    await OrderModel.update({
-      total,
-      customerId,
-      items: items.map(item => ({
+  async update(entity: Order): Promise<void> {
+    const sequelize = OrderModel.sequelize;
+    await sequelize.transaction(async (t) => {
+      await OrderItemModel.destroy({
+        where: { order_id: entity.id },
+        transaction: t,
+      });
+      const items = entity.items.map((item) => ({
         id: item.id,
         price: item.price,
+        product_id: item.productId,
         quantity: item.quantity,
-        product_id: item.productId
-      }))
-    }, { where: { id } })
+        order_id: entity.id,
+      }));
+      await OrderItemModel.bulkCreate(items, { transaction: t });
+      await OrderModel.update(
+        { total: entity.total },
+        { where: { id: entity.id }, transaction: t }
+      );
+    });
   }
 
   async findOne(id: string): Promise<Order> {

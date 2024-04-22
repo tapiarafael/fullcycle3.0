@@ -15,6 +15,10 @@ export class OrderItem {
     return this._quantity * this._price;
   }
 
+  changeQuantity(quantity: number) {
+    this._quantity = quantity;
+  }
+
   get id(): string {
     return this._id;
   }
