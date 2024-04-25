@@ -1,8 +1,8 @@
 import { IEventHandler } from "../../@shared/event-handler.interface";
-import { IEvent } from "../../@shared/event.interface";
+import { CustomerAddressChangedEvent } from "../customer-address-changed.event";
 
-export class SendConsoleLogWhenAddressIsChanged implements IEventHandler {
-  handle({eventData, ...event}: IEvent): void {
+export class SendConsoleLogWhenAddressIsChanged implements IEventHandler<CustomerAddressChangedEvent> {
+  handle({eventData, ...event}: CustomerAddressChangedEvent): void {
     console.log(`Endereço do cliente: ${eventData.id}, ${eventData.name} alterado para: ${eventData.address.street}, ${eventData.address.number} - ${eventData.address.city} (${eventData.address.zipcode})`)
   }
 
